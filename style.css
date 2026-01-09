@@ -17,30 +17,25 @@ h1 {
     font-weight: 300;
     font-size: 3rem;
     margin-bottom: 40px;
+    overflow: hidden; 
+    border-right: .15em solid #333; /* The cursor */
+    white-space: nowrap; 
+    margin: 0 auto 40px 0;
     letter-spacing: -2px;
-    
-    /* This connects the animation below to the H1 */
-    animation: breathe 4s ease-in-out infinite;
-    color: #333;
+    width: 0;
+    animation: 
+      typing 2s steps(10, end) forwards,
+      blink-caret .75s step-end infinite;
 }
 
-/* The "Breathe" Animation */
-@keyframes breathe {
-    0% {
-        opacity: 0.6;
-        letter-spacing: -2px;
-        filter: blur(1px);
-    }
-    50% {
-        opacity: 1;
-        letter-spacing: 2px;
-        filter: blur(0px);
-    }
-    100% {
-        opacity: 0.6;
-        letter-spacing: -2px;
-        filter: blur(1px);
-    }
+@keyframes typing {
+  from { width: 0 }
+  to { width: 170px } /* Adjust this width to fit the word "Focus." */
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: #333; }
 }
 
 .input-group {
