@@ -87,3 +87,13 @@ li {
     opacity: 0;
     transform: translateX(20px);
 }
+/* This makes the disappearance look smooth */
+li {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* This is the state the item will reach right before it vanishes */
+.hidden {
+    opacity: 0;
+    transform: translateX(30px);
+}
