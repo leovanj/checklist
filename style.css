@@ -18,6 +18,29 @@ h1 {
     font-size: 3rem;
     margin-bottom: 40px;
     letter-spacing: -2px;
+    
+    /* This connects the animation below to the H1 */
+    animation: breathe 4s ease-in-out infinite;
+    color: #333;
+}
+
+/* The "Breathe" Animation */
+@keyframes breathe {
+    0% {
+        opacity: 0.6;
+        letter-spacing: -2px;
+        filter: blur(1px);
+    }
+    50% {
+        opacity: 1;
+        letter-spacing: 2px;
+        filter: blur(0px);
+    }
+    100% {
+        opacity: 0.6;
+        letter-spacing: -2px;
+        filter: blur(1px);
+    }
 }
 
 .input-group {
