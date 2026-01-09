@@ -8,26 +8,38 @@ function renderTasks() {
     todoList.innerHTML = '';
     tasks.forEach((task, index) => {
         const li = document.createElement('li');
-        // When you click the dot, it triggers deleteMe
         li.innerHTML = `
             <div class="check-dot" onclick="deleteMe(${index})"></div>
-            <span>${task.text}</span>
+            <span 
+                contenteditable="true" 
+                onblur="updateTask(${index}, this.innerText)"
+                onkeydown="checkEnter(event, this)"
+            >${task.text}</span>
         `;
         todoList.appendChild(li);
     });
     localStorage.setItem('myTasks', JSON.stringify(tasks));
 }
 
-// This is the function that makes them disappear
+// Saves the new text when you click away from the task
+function updateTask(index, newText) {
+    tasks[index].text = newText;
+    localStorage.setItem('myTasks', JSON.stringify(tasks));
+}
+
+// Allows you to press "Enter" to finish editing
+function checkEnter(event, element) {
+    if (event.key === "Enter") {
+        event.preventDefault(); // Prevents a new line from being created
+        element.blur(); // Triggers the 'onblur' saving function above
+    }
+}
+
 function deleteMe(index) {
-    // 1. Find the specific list item in the browser
     const listItems = document.querySelectorAll('#todoList li');
     const itemToHide = listItems[index];
-
-    // 2. Add the 'hidden' class to start the fade animation
     itemToHide.classList.add('hidden');
 
-    // 3. Wait for the animation (400ms) before deleting the data and refreshing
     setTimeout(() => {
         tasks.splice(index, 1);
         renderTasks();
