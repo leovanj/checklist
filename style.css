@@ -133,4 +133,19 @@ li {
     opacity: 0;
     transform: translateX(30px);
 }
+span[contenteditable="true"] {
+    outline: none;
+    padding: 2px 5px;
+    border-radius: 4px;
+    transition: background 0.3s;
+    cursor: text;
+}
 
+span[contenteditable="true"]:hover {
+    background: #f0f0f0;
+}
+
+span[contenteditable="true"]:focus {
+    background: #fff;
+    border-bottom: 1px dashed #ccc;
+}
