@@ -19,11 +19,16 @@ h1 {
     margin-bottom: 40px;
     letter-spacing: -2px;
     color: #333;
-    
-    /* This triggers the animation when the page loads */
-    animation: entrance 1.5s ease-out forwards;
+    display: inline-block; /* Helps the scaling animation stay centered */
+
+    /* 1. Entrance animation (runs once) 
+       2. Breathe animation (starts after 1.5s and loops forever) */
+    animation: 
+        entrance 1.5s ease-out forwards, 
+        breathe 5s ease-in-out infinite 1.5s;
 }
 
+/* The initial drift-in from the top */
 @keyframes entrance {
     0% {
         opacity: 0;
@@ -34,6 +39,20 @@ h1 {
         opacity: 1;
         transform: translateY(0);
         filter: blur(0px);
+    }
+}
+
+/* The infinite "pulsing" effect */
+@keyframes breathe {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+        letter-spacing: -2px;
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(0.95);
+        letter-spacing: 2px;
     }
 }
 
@@ -114,7 +133,4 @@ li {
     opacity: 0;
     transform: translateX(30px);
 }
-@keyframes breathe {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(0.98); }
-}
+
