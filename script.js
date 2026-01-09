@@ -20,8 +20,18 @@ function renderTasks() {
 
 // This is the function that makes them disappear
 function deleteMe(index) {
-    tasks.splice(index, 1);
-    renderTasks();
+    // 1. Find the specific list item in the browser
+    const listItems = document.querySelectorAll('#todoList li');
+    const itemToHide = listItems[index];
+
+    // 2. Add the 'hidden' class to start the fade animation
+    itemToHide.classList.add('hidden');
+
+    // 3. Wait for the animation (400ms) before deleting the data and refreshing
+    setTimeout(() => {
+        tasks.splice(index, 1);
+        renderTasks();
+    }, 400);
 }
 
 function addTask() {
