@@ -1,28 +1,13 @@
+/* 1. LAYOUT & BACKGROUND */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    /* This is a soft, calming blue */
     background-color: #eef4f9; 
     display: flex;
     justify-content: center;
     padding-top: 100px;
     color: #333;
-    /* Added transition in case you want to toggle colors later */
     transition: background-color 0.8s ease;
-}
-.input-group {
-    display: flex;
-    border-bottom: 2px solid #d0dbe5;
-    padding-bottom: 10px;
-    margin-bottom: 30px;
-}
-
-/* Optional: Make the list items slightly white for a "card" look */
-li {
-    background: rgba(255, 255, 255, 0.4);
-    margin-bottom: 8px;
-    padding: 12px 15px !important;
-    border-radius: 8px;
-    border-bottom: none !important;
+    margin: 0;
 }
 
 .container {
@@ -31,50 +16,56 @@ li {
     padding: 20px;
 }
 
+/* 2. PROGRESS BAR */
+.progress-container {
+    width: 100%;
+    height: 5px;
+    background-color: rgba(0, 0, 0, 0.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0; 
+    transition: opacity 0.5s ease;
+    z-index: 1000;
+}
+
+#progressBar {
+    height: 100%;
+    width: 0%;
+    background-color: #5d9cec;
+    transition: width 0.5s ease, background-color 0.5s ease;
+}
+
+/* 3. ANIMATED HEADING */
 h1 {
     font-weight: 300;
     font-size: 3rem;
     margin-bottom: 40px;
     letter-spacing: -2px;
     color: #333;
-    display: inline-block; /* Helps the scaling animation stay centered */
-
-    /* 1. Entrance animation (runs once) 
-       2. Breathe animation (starts after 1.5s and loops forever) */
+    display: inline-block;
     animation: 
         entrance 1.5s ease-out forwards, 
         breathe 5s ease-in-out infinite 1.5s;
 }
 
-/* The initial drift-in from the top */
 @keyframes entrance {
-    0% {
-        opacity: 0;
-        transform: translateY(-20px);
-        filter: blur(5px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0px);
-    }
+    0% { opacity: 0; transform: translateY(-20px); filter: blur(5px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0px); }
 }
 
-/* The infinite "pulsing" effect */
 @keyframes breathe {
-    0%, 100% {
-        opacity: 1;
-        transform: scale(1);
-        letter-spacing: -2px;
-    }
-    50% {
-        opacity: 0.5;
-        transform: scale(0.95);
-        letter-spacing: 2px;
-    }
+    0%, 100% { opacity: 1; transform: scale(1); letter-spacing: -2px; }
+    50% { opacity: 0.5; transform: scale(0.95); letter-spacing: 2px; }
 }
 
-
+/* 4. INPUT AREA */
+.input-group {
+    display: flex;
+    border-bottom: 2px solid #d0dbe5;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
 
 input {
     flex-grow: 1;
@@ -82,6 +73,7 @@ input {
     background: transparent;
     outline: none;
     font-size: 1.1rem;
+    color: #333;
 }
 
 button {
@@ -95,96 +87,8 @@ button {
 
 button:hover { color: #000; }
 
+/* 5. THE LIST ITEMS (CARD STYLE) */
 ul { list-style: none; padding: 0; }
 
 li {
     display: flex;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #eee;
-    animation: fadeIn 0.4s ease;
-}
-
-li.completed span {
-    text-decoration: line-through;
-    color: #bbb;
-}
-
-.check-dot {
-    height: 12px;
-    width: 12px;
-    border: 1px solid #333;
-    border-radius: 50%;
-    margin-right: 15px;
-    cursor: pointer;
-}
-
-li.completed .check-dot {
-    background-color: #333;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-/* Add this to your style.css */
-li {
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.fade-out {
-    opacity: 0;
-    transform: translateX(20px);
-}
-/* This makes the disappearance look smooth */
-li {
-    transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-/* This is the state the item will reach right before it vanishes */
-.hidden {
-    opacity: 0;
-    transform: translateX(30px);
-}
-span[contenteditable="true"] {
-    outline: none;
-    padding: 2px 5px;
-    border-radius: 4px;
-    transition: background 0.3s;
-    cursor: text;
-}
-
-span[contenteditable="true"]:hover {
-    background: #f0f0f0;
-}
-
-span[contenteditable="true"]:focus {
-    background: #fff;
-    border-bottom: 1px dashed #ccc;
-}
-/* Progress Bar Styles */
-.progress-container {
-    width: 100%;
-    height: 5px;
-    background-color: rgba(0, 0, 0, 0.05);
-    position: fixed;
-    top: 0;
-    left: 0;
-}
-
-#progressBar {
-    height: 100%;
-    width: 0%;
-    background-color: #5d9cec;
-    transition: width 0.5s ease, background-color 0.5s ease;
-}
-
-/* Fade out effect for deleted tasks */
-li {
-    transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-.hidden {
-    opacity: 0;
-    transform: translateX(30px);
-}
