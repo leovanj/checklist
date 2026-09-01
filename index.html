@@ -1,25 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Focus Checklist</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tasks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="progress-container">
-        <div id="progressBar"></div>
+
+  <main class="sheet">
+    <header class="topline">
+      <p class="date" id="dateLine"></p>
+      <h1>My Tasks</h1>
+      <p class="count" id="countLine"></p>
+    </header>
+
+    <div class="add-row">
+      <button class="add-toggle" id="addToggle" aria-label="Add a task">
+        <span class="plus"></span>
+      </button>
+      <input type="text" id="todoInput" placeholder="Add a task" maxlength="80" autocomplete="off">
     </div>
 
-    <div class="container">
-        <h1>Focus.</h1>
-        <div class="input-group">
-            <input type="text" id="todoInput" placeholder="Add a new task..." maxlength="40">
-            <button id="addBtn">+</button>
-        </div>
-        <ul id="todoList"></ul>
-    </div>
+    <ul class="tasklist" id="activeList"></ul>
 
-    <script src="script.js"></script>
+    <section class="completed-section" id="completedSection" hidden>
+      <button class="completed-toggle" id="completedToggle">
+        <span class="chevron"></span>
+        <span id="completedLabel">Completed</span>
+      </button>
+      <ul class="tasklist completed" id="completedList"></ul>
+    </section>
+
+    <p class="empty" id="emptyState" hidden>Nothing here. Add something above.</p>
+  </main>
+
+<script src="script.js"></script>
 </body>
 </html>

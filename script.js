@@ -1,90 +1,160 @@
-const input = document.getElementById('todoInput');
-const addBtn = document.getElementById('addBtn');
-const todoList = document.getElementById('todoList');
-const progressBar = document.getElementById('progressBar');
+const STORAGE_KEY = "myTasks_v2";
 
-let tasks = JSON.parse(localStorage.getItem('myTasks')) || [];
-let totalTasks = tasks.length || 0;
+const input = document.getElementById("todoInput");
+const addToggle = document.getElementById("addToggle");
+const activeList = document.getElementById("activeList");
+const completedSection = document.getElementById("completedSection");
+const completedList = document.getElementById("completedList");
+const completedToggle = document.getElementById("completedToggle");
+const completedLabel = document.getElementById("completedLabel");
+const countLine = document.getElementById("countLine");
+const emptyState = document.getElementById("emptyState");
+const dateLine = document.getElementById("dateLine");
 
-function renderTasks() {
-    todoList.innerHTML = '';
-    tasks.forEach((task, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <div class="check-dot" onclick="deleteMe(${index})"></div>
-            <span contenteditable="true" onblur="updateTask(${index}, this.innerText)" onkeydown="checkEnter(event, this)">${task.text}</span>
-        `;
-        todoList.appendChild(li);
-    });
-    localStorage.setItem('myTasks', JSON.stringify(tasks));
-    updateProgressBar();
+let tasks = loadTasks();
+
+function loadTasks() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw).map(t => ({
+      id: t.id ?? crypto.randomUUID(),
+      text: t.text ?? "",
+      done: !!t.done
+    }));
+  } catch {
+    return [];
+  }
 }
 
-function updateProgressBar() {
-    // 1. If no tasks exist, hide the bar and reset the counter
-    if (tasks.length === 0) {
-        progressBar.style.width = "0%";
-        progressBar.parentElement.style.opacity = "0"; // Hides the container
-        totalTasks = 0; 
-        return;
+function saveTasks() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+}
+
+function setDate() {
+  const today = new Date();
+  dateLine.textContent = today.toLocaleDateString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric"
+  });
+}
+
+function makeTaskRow(task) {
+  const li = document.createElement("li");
+  li.className = "task" + (task.done ? " done" : "");
+  li.dataset.id = task.id;
+
+  const check = document.createElement("button");
+  check.className = "task-check";
+  check.setAttribute("aria-label", task.done ? "Mark as not done" : "Mark as done");
+  check.addEventListener("click", () => toggleDone(task.id));
+
+  const text = document.createElement("span");
+  text.className = "task-text";
+  text.contentEditable = "true";
+  text.textContent = task.text;
+  text.addEventListener("blur", () => updateText(task.id, text.textContent));
+  text.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      text.blur();
     }
+  });
 
-    // 2. If tasks exist, make sure the bar is visible
-    progressBar.parentElement.style.opacity = "1";
+  const del = document.createElement("button");
+  del.className = "task-delete";
+  del.setAttribute("aria-label", "Delete task");
+  del.addEventListener("click", () => deleteTask(task.id, li));
 
-    const finishedTasks = totalTasks - tasks.length;
-    const percentage = (finishedTasks / totalTasks) * 100;
-    progressBar.style.width = percentage + "%";
-
-    if (percentage === 100) {
-        progressBar.style.backgroundColor = "#48bb78";
-        // Optional: Reset after a short delay once 100% is reached
-        setTimeout(() => {
-            if (tasks.length === 0) {
-                progressBar.style.width = "0%";
-                progressBar.parentElement.style.opacity = "0";
-            }
-        }, 1000);
-    } else {
-        progressBar.style.backgroundColor = "#5d9cec";
-    }
+  li.append(check, text, del);
+  return li;
 }
 
-function updateTask(index, newText) {
-    tasks[index].text = newText;
-    localStorage.setItem('myTasks', JSON.stringify(tasks));
+function render() {
+  const active = tasks.filter(t => !t.done);
+  const done = tasks.filter(t => t.done);
+
+  activeList.innerHTML = "";
+  active.forEach(t => activeList.appendChild(makeTaskRow(t)));
+
+  completedList.innerHTML = "";
+  done.forEach(t => completedList.appendChild(makeTaskRow(t)));
+
+  completedSection.hidden = done.length === 0;
+  completedLabel.textContent = `Completed (${done.length})`;
+
+  emptyState.hidden = tasks.length !== 0;
+
+  if (tasks.length === 0) {
+    countLine.textContent = "";
+  } else if (active.length === 0) {
+    countLine.textContent = "All done";
+  } else {
+    countLine.textContent = `${active.length} left`;
+  }
+
+  saveTasks();
 }
 
-function checkEnter(event, element) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        element.blur();
-    }
+function addTask(value) {
+  const text = value.trim();
+  if (!text) return;
+  tasks.unshift({ id: crypto.randomUUID(), text, done: false });
+  render();
 }
 
-function addTask() {
-    if (input.value.trim() !== '') {
-        tasks.push({ text: input.value });
-        if (tasks.length === 1) totalTasks = 1; // Start a new session
-        else totalTasks++;
-        
-        input.value = '';
-        renderTasks();
-    }
+function updateText(id, newText) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  const clean = newText.trim();
+  if (!clean) {
+    deleteTask(id);
+    return;
+  }
+  task.text = clean;
+  saveTasks();
 }
 
-function deleteMe(index) {
-    const listItems = document.querySelectorAll('#todoList li');
-    if (listItems[index]) {
-        listItems[index].classList.add('hidden');
-        setTimeout(() => {
-            tasks.splice(index, 1);
-            renderTasks();
-        }, 400);
-    }
+function toggleDone(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  task.done = !task.done;
+  render();
 }
 
-addBtn.addEventListener('click', addTask);
-input.addEventListener('keypress', (e) => { if (e.key === 'Enter') addTask(); });
+function deleteTask(id, liEl) {
+  if (liEl) {
+    liEl.classList.add("leaving");
+    liEl.addEventListener("animationend", () => {
+      tasks = tasks.filter(t => t.id !== id);
+      render();
+    }, { once: true });
+  } else {
+    tasks = tasks.filter(t => t.id !== id);
+    render();
+  }
+}
 
-renderTasks();
+// Add row interactions
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    addTask(input.value);
+    input.value = "";
+  }
+});
+
+addToggle.addEventListener("click", () => {
+  input.focus();
+  if (input.value.trim()) {
+    addTask(input.value);
+    input.value = "";
+  }
+});
+
+completedToggle.addEventListener("click", () => {
+  completedSection.classList.toggle("open");
+});
+
+setDate();
+render();
