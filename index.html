@@ -15,14 +15,27 @@
     <header class="topline">
       <p class="date" id="dateLine"></p>
       <h1>My Tasks</h1>
-      <p class="count" id="countLine"></p>
     </header>
+
+    <nav class="lists" id="listTabs">
+      <button class="list-tab" data-list="school">School</button>
+      <button class="list-tab" data-list="personal">Personal</button>
+      <button class="list-tab" data-list="other">Other</button>
+    </nav>
+    <p class="count" id="countLine"></p>
 
     <div class="add-row">
       <button class="add-toggle" id="addToggle" aria-label="Add a task">
         <span class="plus"></span>
       </button>
       <input type="text" id="todoInput" placeholder="Add a task" maxlength="80" autocomplete="off">
+      <button class="label-toggle" id="labelToggle" aria-label="Add a label" title="Add a label"></button>
+    </div>
+
+    <div class="label-picker" id="labelPicker" hidden>
+      <input type="text" id="labelInput" placeholder="Label name" list="labelOptions" maxlength="20" autocomplete="off">
+      <datalist id="labelOptions"></datalist>
+      <span class="label-picker-hint">Enter to attach · Esc to skip</span>
     </div>
 
     <ul class="tasklist" id="activeList"></ul>
